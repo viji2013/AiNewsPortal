@@ -55,13 +55,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
 
           <div className="prose prose-invert max-w-none">
-            <p className="text-lg text-slate-300 leading-relaxed">{article.summary}</p>
+            <p className="text-lg text-slate-300 leading-relaxed">{(article as any).summary}</p>
           </div>
 
-          {article.url && (
+          {(article as any).url && (
             <div className="mt-8 pt-8 border-t border-slate-700">
               <a
-                href={article.url}
+                href={(article as any).url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -107,30 +107,30 @@ export async function generateMetadata({ params }: ArticlePageProps) {
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-  const ogImageUrl = `${appUrl}/api/og?title=${encodeURIComponent(article.title)}&summary=${encodeURIComponent(article.summary)}&category=${encodeURIComponent(article.category)}`
+  const ogImageUrl = `${appUrl}/api/og?title=${encodeURIComponent((article as any).title)}&summary=${encodeURIComponent((article as any).summary)}&category=${encodeURIComponent((article as any).category)}`
 
   return {
-    title: `${article.title} | AI News`,
-    description: article.summary,
+    title: `${(article as any).title} | AI News`,
+    description: (article as any).summary,
     openGraph: {
-      title: article.title,
-      description: article.summary,
+      title: (article as any).title,
+      description: (article as any).summary,
       type: 'article',
-      publishedTime: article.published_at,
-      authors: [article.source || 'AI News'],
+      publishedTime: (article as any).published_at,
+      authors: [(article as any).source || 'AI News'],
       images: [
         {
           url: ogImageUrl,
           width: 1200,
           height: 630,
-          alt: article.title,
+          alt: (article as any).title,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: article.title,
-      description: article.summary,
+      title: (article as any).title,
+      description: (article as any).summary,
       images: [ogImageUrl],
     },
   }
