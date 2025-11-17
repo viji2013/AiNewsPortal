@@ -45,7 +45,7 @@ export function ArticleCard({ article, isBookmarked, onBookmark, onShare }: Arti
       <CardContent className="p-6">
         {/* Category Badge */}
         <div className="mb-3">
-          <Badge variant="primary">{article.category.toUpperCase()}</Badge>
+          <Badge variant="primary">{(article.category || 'uncategorized').toUpperCase()}</Badge>
         </div>
 
         {/* Title */}

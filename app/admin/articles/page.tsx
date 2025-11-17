@@ -2,6 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import type { Database } from '@/types/database.types'
+
+type NewsArticle = Database['public']['Tables']['news_articles']['Row']
 
 interface ArticlesPageProps {
   searchParams: {
@@ -33,6 +36,7 @@ export default async function ArticlesManagementPage({ searchParams }: ArticlesP
 
   const { data: articles, count } = await query
 
+  const typedArticles = (articles || []) as NewsArticle[]
   const totalPages = Math.ceil((count || 0) / limit)
 
   return (
@@ -87,7 +91,7 @@ export default async function ArticlesManagementPage({ searchParams }: ArticlesP
                 </tr>
               </thead>
               <tbody>
-                {articles?.map((article) => (
+                {typedArticles.map((article) => (
                   <tr key={article.id} className="border-b border-slate-800 hover:bg-slate-800/50">
                     <td className="py-3 px-4">
                       <div className="max-w-md">
@@ -97,7 +101,7 @@ export default async function ArticlesManagementPage({ searchParams }: ArticlesP
                     </td>
                     <td className="py-3 px-4">
                       <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-sm">
-                        {article.category.toUpperCase()}
+                        {(article.category || 'uncategorized').toUpperCase()}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-slate-300">{article.source}</td>
