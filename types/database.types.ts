@@ -46,7 +46,7 @@ export interface Database {
           id: number
           title: string
           summary: string
-          category: string
+          category: string | null
           source: string | null
           url: string | null
           image_url: string | null
@@ -57,7 +57,7 @@ export interface Database {
           id?: never
           title: string
           summary: string
-          category: string
+          category?: string | null
           source?: string | null
           url?: string | null
           image_url?: string | null
@@ -68,7 +68,7 @@ export interface Database {
           id?: never
           title?: string
           summary?: string
-          category?: string
+          category?: string | null
           source?: string | null
           url?: string | null
           image_url?: string | null

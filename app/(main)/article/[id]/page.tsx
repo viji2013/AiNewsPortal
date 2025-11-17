@@ -1,9 +1,11 @@
-// @ts-nocheck
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/utils/date'
+import type { Database } from '@/types/database.types'
+
+type NewsArticle = Database['public']['Tables']['news_articles']['Row']
 
 interface ArticlePageProps {
   params: {
@@ -29,6 +31,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound()
   }
 
+  const typedArticle = article as NewsArticle
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -45,24 +49,24 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <article className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-8">
           <div className="mb-6">
             <Badge variant="primary" className="mb-4">
-              {((article as any).category || 'uncategorized').toUpperCase()}
+              {(typedArticle.category || 'uncategorized').toUpperCase()}
             </Badge>
-            <h1 className="text-4xl font-bold text-white mb-4">{(article as any).title}</h1>
+            <h1 className="text-4xl font-bold text-white mb-4">{typedArticle.title}</h1>
             <div className="flex items-center gap-4 text-sm text-slate-400">
-              <span>{(article as any).source || 'Unknown Source'}</span>
+              <span>{typedArticle.source || 'Unknown Source'}</span>
               <span>•</span>
-              <span>{formatDate((article as any).published_at)}</span>
+              <span>{formatDate(typedArticle.published_at)}</span>
             </div>
           </div>
 
           <div className="prose prose-invert max-w-none">
-            <p className="text-lg text-slate-300 leading-relaxed">{(article as any).summary}</p>
+            <p className="text-lg text-slate-300 leading-relaxed">{typedArticle.summary}</p>
           </div>
 
-          {(article as any).url && (
+          {typedArticle.url && (
             <div className="mt-8 pt-8 border-t border-slate-700">
               <a
-                href={(article as any).url}
+                href={typedArticle.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -107,31 +111,32 @@ export async function generateMetadata({ params }: ArticlePageProps) {
     }
   }
 
+  const typedArticle = article as NewsArticle
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-  const ogImageUrl = `${appUrl}/api/og?title=${encodeURIComponent((article as any).title)}&summary=${encodeURIComponent((article as any).summary)}&category=${encodeURIComponent((article as any).category || 'uncategorized')}`
+  const ogImageUrl = `${appUrl}/api/og?title=${encodeURIComponent(typedArticle.title)}&summary=${encodeURIComponent(typedArticle.summary)}&category=${encodeURIComponent(typedArticle.category || 'uncategorized')}`
 
   return {
-    title: `${(article as any).title} | AI News`,
-    description: (article as any).summary,
+    title: `${typedArticle.title} | AI News`,
+    description: typedArticle.summary,
     openGraph: {
-      title: (article as any).title,
-      description: (article as any).summary,
+      title: typedArticle.title,
+      description: typedArticle.summary,
       type: 'article',
-      publishedTime: (article as any).published_at,
-      authors: [(article as any).source || 'AI News'],
+      publishedTime: typedArticle.published_at,
+      authors: [typedArticle.source || 'AI News'],
       images: [
         {
           url: ogImageUrl,
           width: 1200,
           height: 630,
-          alt: (article as any).title,
+          alt: typedArticle.title,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: (article as any).title,
-      description: (article as any).summary,
+      title: typedArticle.title,
+      description: typedArticle.summary,
       images: [ogImageUrl],
     },
   }
