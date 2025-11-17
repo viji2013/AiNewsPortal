@@ -21,7 +21,7 @@ export async function GET(request: Request) {
             avatar_url: data.user.user_metadata?.avatar_url || data.user.user_metadata?.picture || null,
             phone_number: data.user.phone || null,
             updated_at: new Date().toISOString(),
-          },
+          } as any,
           {
             onConflict: 'id',
           }
