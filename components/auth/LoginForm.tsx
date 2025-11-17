@@ -1,18 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { signInWithEmail, signUpWithEmail, signInWithGoogle, signInWithGitHub, signInWithOTP, verifyOTP } from '@/lib/auth/actions'
+import { signInWithEmail, signUpWithEmail, signInWithGoogle, signInWithGitHub } from '@/lib/auth/actions'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 export function LoginForm() {
-  const [mode, setMode] = useState<'email' | 'providers' | 'otp' | 'verify'>('email')
+  const [mode, setMode] = useState<'email' | 'providers'>('email')
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [phone, setPhone] = useState('')
-  const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
@@ -83,56 +81,7 @@ export function LoginForm() {
     }
   }
 
-  const handleSendOTP = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    setSuccess(null)
 
-    // Basic phone validation
-    if (!phone || phone.length < 10) {
-      setError('Please enter a valid phone number')
-      setLoading(false)
-      return
-    }
-
-    try {
-      const result = await signInWithOTP(phone)
-      if (result.error) {
-        setError(result.error)
-      } else {
-        setSuccess('OTP sent! Check your phone.')
-        setMode('verify')
-      }
-    } catch (err) {
-      setError('Failed to send OTP')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleVerifyOTP = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-
-    if (!otp || otp.length !== 6) {
-      setError('Please enter a valid 6-digit OTP')
-      setLoading(false)
-      return
-    }
-
-    try {
-      const result = await verifyOTP(phone, otp)
-      if (result.error) {
-        setError(result.error)
-      }
-      // Success will redirect via middleware
-    } catch (err) {
-      setError('Failed to verify OTP')
-      setLoading(false)
-    }
-  }
 
   return (
     <div className="space-y-4">
@@ -256,23 +205,6 @@ export function LoginForm() {
             Continue with GitHub
           </Button>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-600"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-slate-800 text-slate-400">Or</span>
-            </div>
-          </div>
-
-          <Button
-            onClick={() => setMode('otp')}
-            variant="secondary"
-            className="w-full"
-          >
-            Sign in with Phone (OTP)
-          </Button>
-
           <Button
             onClick={() => setMode('email')}
             variant="outline"
@@ -281,86 +213,6 @@ export function LoginForm() {
             Back to Email Sign In
           </Button>
         </>
-      )}
-
-      {mode === 'otp' && (
-        <form onSubmit={handleSendOTP} className="space-y-4">
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-slate-300 mb-2">
-              Phone Number
-            </label>
-            <Input
-              id="phone"
-              type="tel"
-              placeholder="+1234567890"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              disabled={loading}
-              required
-            />
-            <p className="text-xs text-slate-400 mt-1">
-              Include country code (e.g., +1 for US)
-            </p>
-          </div>
-
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              onClick={() => setMode('providers')}
-              variant="outline"
-              className="flex-1"
-              disabled={loading}
-            >
-              Back
-            </Button>
-            <Button type="submit" className="flex-1" disabled={loading}>
-              {loading ? 'Sending...' : 'Send OTP'}
-            </Button>
-          </div>
-        </form>
-      )}
-
-      {mode === 'verify' && (
-        <form onSubmit={handleVerifyOTP} className="space-y-4">
-          <div>
-            <label htmlFor="otp" className="block text-sm font-medium text-slate-300 mb-2">
-              Enter OTP
-            </label>
-            <Input
-              id="otp"
-              type="text"
-              placeholder="123456"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-              disabled={loading}
-              maxLength={6}
-              required
-            />
-            <p className="text-xs text-slate-400 mt-1">
-              Enter the 6-digit code sent to {phone}
-            </p>
-          </div>
-
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              onClick={() => {
-                setMode('otp')
-                setOtp('')
-                setError(null)
-                setSuccess(null)
-              }}
-              variant="outline"
-              className="flex-1"
-              disabled={loading}
-            >
-              Back
-            </Button>
-            <Button type="submit" className="flex-1" disabled={loading}>
-              {loading ? 'Verifying...' : 'Verify OTP'}
-            </Button>
-          </div>
-        </form>
       )}
     </div>
   )
