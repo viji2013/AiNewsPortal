@@ -45,7 +45,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <article className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-8">
           <div className="mb-6">
             <Badge variant="primary" className="mb-4">
-              {(article as any).category.toUpperCase()}
+              {((article as any).category || 'uncategorized').toUpperCase()}
             </Badge>
             <h1 className="text-4xl font-bold text-white mb-4">{(article as any).title}</h1>
             <div className="flex items-center gap-4 text-sm text-slate-400">
@@ -108,7 +108,7 @@ export async function generateMetadata({ params }: ArticlePageProps) {
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-  const ogImageUrl = `${appUrl}/api/og?title=${encodeURIComponent((article as any).title)}&summary=${encodeURIComponent((article as any).summary)}&category=${encodeURIComponent((article as any).category)}`
+  const ogImageUrl = `${appUrl}/api/og?title=${encodeURIComponent((article as any).title)}&summary=${encodeURIComponent((article as any).summary)}&category=${encodeURIComponent((article as any).category || 'uncategorized')}`
 
   return {
     title: `${(article as any).title} | AI News`,
