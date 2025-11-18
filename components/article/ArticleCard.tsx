@@ -40,10 +40,10 @@ export function ArticleCard({ article, isBookmarked, onBookmark, onShare }: Arti
   const finalImageUrl = imageError || !article.image_url ? FALLBACK_IMAGE : article.image_url
 
   return (
-    <article className="group border-b border-slate-200 dark:border-slate-800 pb-6 mb-6 last:border-b-0">
-      {/* Standard Image - Reuters Editorial Style - 16:9 aspect ratio */}
-      <Link href={`/article/${article.id}`} className="block mb-4">
-        <div className="relative w-full h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+    <article className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+      {/* InShorts-Style Image - Larger, more prominent */}
+      <Link href={`/article/${article.id}`} className="block relative">
+        <div className="relative w-full h-56 sm:h-64 overflow-hidden bg-slate-100 dark:bg-slate-800">
           <Image
             src={finalImageUrl}
             alt={article.title}
@@ -54,47 +54,49 @@ export function ArticleCard({ article, isBookmarked, onBookmark, onShare }: Arti
             priority={false}
             quality={85}
           />
+          {/* Category badge overlay on image */}
+          <div className="absolute top-4 left-4">
+            <span className="px-3 py-1.5 bg-slate-900/90 backdrop-blur-sm text-white font-bold text-xs uppercase tracking-wide rounded-full">
+              {article.category || 'AI'}
+            </span>
+          </div>
         </div>
       </Link>
 
-      {/* Content - Reuters Editorial Style */}
-      <div className="space-y-3">
-        {/* Category & Meta */}
-        <div className="flex items-center gap-3 text-xs">
-          <span className="px-2.5 py-1 bg-slate-900 dark:bg-slate-700 text-white font-semibold uppercase tracking-wide">
-            {article.category || 'AI'}
-          </span>
-          <span className="text-slate-500 dark:text-slate-400 font-medium">
-            {article.source || 'AI News'}
-          </span>
-          <span className="text-slate-400 dark:text-slate-500">•</span>
-          <time className="text-slate-500 dark:text-slate-400">
-            {formatDistanceToNow(article.published_at)}
-          </time>
+      {/* Content - InShorts Style */}
+      <div className="p-5 sm:p-6 space-y-3">
+        {/* Meta Info */}
+        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+          <span className="font-medium">{article.source || 'AI News'}</span>
+          <span>•</span>
+          <time>{formatDistanceToNow(article.published_at)}</time>
         </div>
 
-        {/* Headline - Reuters Style: Bold, Readable */}
+        {/* Headline - InShorts Style: Bold, Prominent */}
         <Link href={`/article/${article.id}`}>
-          <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
             {article.title}
           </h2>
         </Link>
 
         {/* Summary - Clean, readable */}
-        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed line-clamp-2">
+        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
           {article.summary}
         </p>
 
         {/* Actions Bar */}
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
           <Link 
             href={`/article/${article.id}`}
-            className="text-sm font-semibold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center gap-1"
           >
-            Read more →
+            Read full story
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </Link>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <button
               onClick={handleBookmark}
               disabled={bookmarking}
@@ -104,7 +106,7 @@ export function ArticleCard({ article, isBookmarked, onBookmark, onShare }: Arti
               <svg
                 className={`w-5 h-5 ${
                   isBookmarked 
-                    ? 'fill-slate-900 dark:fill-white' 
+                    ? 'fill-blue-600 dark:fill-blue-400' 
                     : 'fill-none stroke-slate-400 dark:stroke-slate-500'
                 }`}
                 stroke="currentColor"
