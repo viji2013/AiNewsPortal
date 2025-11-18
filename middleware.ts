@@ -6,8 +6,8 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  // Protected routes that require authentication
-  const protectedRoutes = ['/feed', '/saved', '/collections', '/settings']
+  // Protected routes that require authentication (feed is now public for guests)
+  const protectedRoutes = ['/saved', '/collections', '/settings']
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
   // Admin routes

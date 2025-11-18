@@ -42,21 +42,21 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
   })
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-6 sm:py-8 max-w-7xl">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2">
-            AI News Feed
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-10 max-w-7xl">
+        {/* Header - InShorts Style */}
+        <div className="mb-10 text-center sm:text-left">
+          <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent mb-3">
+            AI News Shorts
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Stay updated with the latest in artificial intelligence
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-medium">
+            Quick reads on the latest in artificial intelligence
           </p>
         </div>
 
         {/* Search and Filters */}
-        <div className="mb-8 space-y-4">
-          <div className="max-w-2xl">
+        <div className="mb-10 space-y-5">
+          <div className="max-w-2xl mx-auto sm:mx-0">
             <SearchBar />
           </div>
           
@@ -67,8 +67,8 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
           <ActiveFilters />
         </div>
 
-        {/* Article Feed */}
-        <Suspense fallback={<ArticleFeedSkeleton count={9} />}>
+        {/* Article Feed - InShorts Style */}
+        <Suspense fallback={<ArticleFeedSkeleton count={6} />}>
           <ArticleFeed
             initialArticles={articles}
             userId={user?.id}

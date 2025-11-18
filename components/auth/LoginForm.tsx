@@ -83,6 +83,10 @@ export function LoginForm() {
 
 
 
+  const handleGuestAccess = () => {
+    router.push('/feed')
+  }
+
   return (
     <div className="space-y-4">
       {error && (
@@ -161,6 +165,27 @@ export function LoginForm() {
           >
             Other Sign In Options
           </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-600"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-slate-800 text-slate-400">Or</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            onClick={handleGuestAccess}
+            variant="secondary"
+            className="w-full"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Continue as Guest
+          </Button>
         </form>
       )}
 
@@ -211,6 +236,27 @@ export function LoginForm() {
             className="w-full"
           >
             Back to Email Sign In
+          </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-600"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-slate-800 text-slate-400">Or</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            onClick={handleGuestAccess}
+            variant="secondary"
+            className="w-full"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Continue as Guest
           </Button>
         </>
       )}

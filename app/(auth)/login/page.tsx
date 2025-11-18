@@ -22,9 +22,14 @@ export default async function LoginPage() {
           <LoginForm />
         </div>
 
-        <p className="text-center text-slate-400 text-sm mt-6">
-          By signing in, you agree to our Terms of Service and Privacy Policy
-        </p>
+        <div className="text-center mt-6">
+          <p className="text-slate-400 text-sm mb-3">
+            By signing in, you agree to our Terms of Service and Privacy Policy
+          </p>
+          <p className="text-slate-500 text-xs">
+            💡 You can browse articles as a guest without signing in
+          </p>
+        </div>
       </div>
     </div>
   )
