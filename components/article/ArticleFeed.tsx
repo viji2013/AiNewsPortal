@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { ArticleCard } from './ArticleCard'
 import { AddToCollectionModal } from './AddToCollectionModal'
 import { ShareModal } from './ShareModal'
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/Toast'
 import type { Article } from '@/types/database'
 import { toggleBookmark, isArticleSaved } from '@/app/actions/bookmarks'
+import { deduplicateArticles } from '@/lib/utils/deduplication'
 
 interface ArticleFeedProps {
   initialArticles: Article[]
@@ -25,7 +26,10 @@ export function ArticleFeed({
   category,
   searchQuery,
 }: ArticleFeedProps) {
-  const [articles, setArticles] = useState(initialArticles)
+  // Deduplicate articles by image URL before setting state
+  const deduplicatedArticles = useMemo(() => deduplicateArticles(initialArticles), [initialArticles])
+  
+  const [articles, setArticles] = useState(deduplicatedArticles)
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(new Set())
   const [loading, setLoading] = useState(false)
   const [shareArticle, setShareArticle] = useState<Article | null>(null)
@@ -129,17 +133,19 @@ export function ArticleFeed({
 
   return (
     <>
-      {/* InShorts-style responsive grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 sm:gap-8">
-        {articles.map((article) => (
-          <ArticleCard
-            key={`article-${article.id}`}
-            article={article}
-            isBookmarked={bookmarkedIds.has(article.id)}
-            onBookmark={handleBookmark}
-            onShare={handleShare}
-          />
-        ))}
+      {/* Reuters-style responsive grid - max-width container */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {articles.map((article) => (
+            <ArticleCard
+              key={`article-${article.id}`}
+              article={article}
+              isBookmarked={bookmarkedIds.has(article.id)}
+              onBookmark={handleBookmark}
+              onShare={handleShare}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Load More */}

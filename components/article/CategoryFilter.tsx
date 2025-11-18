@@ -31,10 +31,10 @@ export function CategoryFilter() {
       <button
         onClick={() => handleCategoryClick(null)}
         className={cn(
-          'px-4 py-2 rounded-lg font-medium text-sm transition-all',
+          'px-4 py-2 font-semibold text-xs uppercase tracking-wide transition-colors',
           !activeCategory
-            ? 'bg-blue-600 text-white shadow-sm'
-            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500'
+            ? 'bg-slate-900 dark:bg-slate-700 text-white'
+            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
         )}
       >
         All
@@ -44,10 +44,10 @@ export function CategoryFilter() {
           key={cat.value}
           onClick={() => handleCategoryClick(cat.value)}
           className={cn(
-            'px-4 py-2 rounded-lg font-medium text-sm transition-all',
+            'px-4 py-2 font-semibold text-xs uppercase tracking-wide transition-colors',
             activeCategory === cat.value
-              ? 'bg-blue-600 text-white shadow-sm'
-              : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500'
+              ? 'bg-slate-900 dark:bg-slate-700 text-white'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
           )}
         >
           {cat.label}
