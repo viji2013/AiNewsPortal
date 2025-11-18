@@ -181,3 +181,6 @@ export const metadata = {
   title: 'Admin Dashboard | AI News',
   description: 'Manage your AI News platform',
 }
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
