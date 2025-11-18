@@ -82,7 +82,8 @@ export function LoginForm() {
   }
 
   const handleGuestAccess = () => {
-    router.push('/feed')
+    // Use window.location to bypass any middleware redirects
+    window.location.href = '/feed'
   }
 
   return (
