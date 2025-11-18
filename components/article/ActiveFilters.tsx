@@ -36,50 +36,42 @@ export function ActiveFilters() {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="text-sm text-slate-400">Active filters:</span>
+    <div className="flex flex-wrap items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-900/30">
+      <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Filters:</span>
       
       {category && (
-        <Badge variant="primary" className="flex items-center gap-1.5">
-          <span>Category: {getCategoryLabel(category)}</span>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded-full">
+          {getCategoryLabel(category)}
           <button
             onClick={() => clearFilter('category')}
-            className="hover:text-white transition-colors"
+            className="hover:bg-blue-700 rounded-full p-0.5 transition-colors"
             aria-label="Remove category filter"
           >
-            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-        </Badge>
+        </span>
       )}
       
       {searchQuery && (
-        <Badge variant="primary" className="flex items-center gap-1.5">
-          <span>Search: "{searchQuery}"</span>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded-full">
+          "{searchQuery}"
           <button
             onClick={() => clearFilter('search')}
-            className="hover:text-white transition-colors"
+            className="hover:bg-blue-700 rounded-full p-0.5 transition-colors"
             aria-label="Remove search filter"
           >
-            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-        </Badge>
+        </span>
       )}
       
       <button
         onClick={clearAllFilters}
-        className="text-sm text-blue-400 hover:text-blue-300 transition-colors underline"
+        className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
       >
         Clear all
       </button>

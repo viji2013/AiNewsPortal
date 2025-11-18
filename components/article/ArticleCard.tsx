@@ -1,10 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import Image from 'next/image'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import type { Article } from '@/types/database'
 import { formatDistanceToNow } from '@/lib/utils/date'
 
@@ -15,10 +13,15 @@ interface ArticleCardProps {
   onShare: (article: Article) => void
 }
 
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=450&fit=crop'
+
 export function ArticleCard({ article, isBookmarked, onBookmark, onShare }: ArticleCardProps) {
   const [bookmarking, setBookmarking] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
-  const handleBookmark = async () => {
+  const handleBookmark = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     setBookmarking(true)
     try {
       await onBookmark(article.id)
@@ -27,108 +30,116 @@ export function ArticleCard({ article, isBookmarked, onBookmark, onShare }: Arti
     }
   }
 
-  return (
-    <Card className="group overflow-hidden hover:border-blue-500/50 transition-all duration-300">
-      {/* Image */}
-      {article.image_url && (
-        <div className="relative h-48 w-full overflow-hidden bg-slate-700">
-          <Image
-            src={article.image_url}
-            alt={article.title}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        </div>
-      )}
+  const handleShare = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onShare(article)
+  }
 
-      <CardContent className="p-6">
-        {/* Category Badge */}
-        <div className="mb-3">
-          <Badge variant="primary">{(article.category || 'uncategorized').toUpperCase()}</Badge>
+  const imageUrl = imageError || !article.image_url ? FALLBACK_IMAGE : article.image_url
+
+  return (
+    <article className="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+      {/* Image Container - 16:9 aspect ratio */}
+      <Link href={`/article/${article.id}`} className="block relative aspect-video overflow-hidden bg-slate-200 dark:bg-slate-700">
+        <Image
+          src={imageUrl}
+          alt={article.title}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          onError={() => setImageError(true)}
+          priority={false}
+        />
+        
+        {/* Category Badge - Overlay on image */}
+        <div className="absolute top-3 left-3">
+          <span className="inline-block px-3 py-1 text-xs font-semibold text-white bg-blue-600 rounded-full shadow-lg">
+            {(article.category || 'News').toUpperCase()}
+          </span>
+        </div>
+      </Link>
+
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-4">
+        {/* Meta Info */}
+        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-2">
+          <span className="font-medium">{article.source || 'Unknown'}</span>
+          <span>•</span>
+          <time>{formatDistanceToNow(article.published_at)}</time>
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-semibold text-white mb-3 line-clamp-2 group-hover:text-blue-400 transition-colors">
-          {article.title}
-        </h3>
+        <Link href={`/article/${article.id}`}>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">
+            {article.title}
+          </h2>
+        </Link>
 
         {/* Summary */}
-        <p className="text-slate-400 text-sm mb-4 line-clamp-3">
+        <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-3 mb-4 flex-1">
           {article.summary}
         </p>
 
-        {/* Metadata */}
-        <div className="flex items-center justify-between text-xs text-slate-500 mb-4">
-          <span>{article.source || 'Unknown Source'}</span>
-          <span>{formatDistanceToNow(article.published_at)}</span>
-        </div>
-
         {/* Actions */}
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1"
-            onClick={() => window.open(article.url || '#', '_blank')}
+        <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
+          <Link 
+            href={`/article/${article.id}`}
+            className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-            Read More
-          </Button>
-
-          <Button
-            variant={isBookmarked ? 'primary' : 'ghost'}
-            size="sm"
-            onClick={handleBookmark}
-            disabled={bookmarking}
-            aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark article'}
-          >
-            <svg
-              className="w-5 h-5"
-              fill={isBookmarked ? 'currentColor' : 'none'}
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+            Read more →
+          </Link>
+          
+          <div className="flex items-center gap-1">
+            {/* Bookmark */}
+            <button
+              onClick={handleBookmark}
+              disabled={bookmarking}
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark article'}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              <svg
+                className={`w-5 h-5 transition-colors ${
+                  isBookmarked 
+                    ? 'fill-blue-600 text-blue-600 dark:fill-blue-400 dark:text-blue-400' 
+                    : 'text-slate-400 dark:text-slate-500'
+                }`}
+                fill={isBookmarked ? 'currentColor' : 'none'}
+                stroke="currentColor"
                 strokeWidth={2}
-                d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-              />
-            </svg>
-          </Button>
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                />
+              </svg>
+            </button>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onShare(article)}
-            aria-label="Share article"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
+            {/* Share */}
+            <button
+              onClick={handleShare}
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              aria-label="Share article"
+            >
+              <svg 
+                className="w-5 h-5 text-slate-400 dark:text-slate-500" 
+                fill="none" 
+                stroke="currentColor" 
                 strokeWidth={2}
-                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-              />
-            </svg>
-          </Button>
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-        
-        {/* Add to Collection button - shown on hover */}
-        <button
-          onClick={() => {
-            // This will be handled by parent component
-            const event = new CustomEvent('addToCollection', { detail: { article } })
-            window.dispatchEvent(event)
-          }}
-          className="mt-2 w-full text-sm text-blue-400 hover:text-blue-300 transition-colors opacity-0 group-hover:opacity-100"
-        >
-          + Add to Collection
-        </button>
-      </CardContent>
-    </Card>
+      </div>
+    </article>
   )
 }

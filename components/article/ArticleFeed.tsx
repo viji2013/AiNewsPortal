@@ -99,26 +99,28 @@ export function ArticleFeed({
 
   if (articles.length === 0) {
     return (
-      <div className="py-16">
-        <div className="text-center">
-          <svg
-            className="w-16 h-16 mx-auto text-slate-600 mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <h2 className="text-2xl font-semibold text-white mb-2">No articles found</h2>
-          <p className="text-slate-400">
+      <div className="py-20">
+        <div className="text-center max-w-md mx-auto">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+            <svg
+              className="w-10 h-10 text-slate-400 dark:text-slate-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+              />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">No articles found</h2>
+          <p className="text-slate-600 dark:text-slate-400">
             {searchQuery || category
-              ? 'Try adjusting your filters or search query'
-              : 'Check back later for new content'}
+              ? 'Try adjusting your filters or search query to find more articles'
+              : 'Check back soon for the latest AI news and updates'}
           </p>
         </div>
       </div>
@@ -127,7 +129,7 @@ export function ArticleFeed({
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {articles.map((article) => (
           <ArticleCard
             key={article.id}
@@ -142,9 +144,13 @@ export function ArticleFeed({
       {/* Load More */}
       {articles.length >= 20 && (
         <div className="mt-12 text-center">
-          <Button onClick={handleLoadMore} disabled={loading} size="lg">
+          <button
+            onClick={handleLoadMore}
+            disabled={loading}
+            className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             {loading ? 'Loading...' : 'Load More Articles'}
-          </Button>
+          </button>
         </div>
       )}
 

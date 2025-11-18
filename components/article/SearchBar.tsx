@@ -28,9 +28,9 @@ export function SearchBar() {
 
   return (
     <div className="relative">
-      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
         <svg
-          className="w-5 h-5 text-slate-400"
+          className="w-5 h-5 text-slate-400 dark:text-slate-500"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -43,25 +43,21 @@ export function SearchBar() {
           />
         </svg>
       </div>
-      <Input
+      <input
         type="search"
-        placeholder="Search articles..."
+        placeholder="Search AI news..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="pl-10 pr-4"
+        className="w-full pl-11 pr-10 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
       />
       {query && (
         <button
           onClick={() => setQuery('')}
-          className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-white"
+          className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
           aria-label="Clear search"
         >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clipRule="evenodd"
-            />
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       )}

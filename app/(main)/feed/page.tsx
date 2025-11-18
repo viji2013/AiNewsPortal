@@ -4,7 +4,7 @@ import { ArticleFeed } from '@/components/article/ArticleFeed'
 import { SearchBar } from '@/components/article/SearchBar'
 import { CategoryFilter } from '@/components/article/CategoryFilter'
 import { ActiveFilters } from '@/components/article/ActiveFilters'
-import { PageLoader } from '@/components/ui/Loading'
+import { ArticleFeedSkeleton } from '@/components/article/ArticleCardSkeleton'
 import { Suspense } from 'react'
 
 interface FeedPageProps {
@@ -42,16 +42,25 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
   })
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      <div className="container mx-auto px-4 py-6 sm:py-8 max-w-7xl">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2">
+            AI News Feed
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Stay updated with the latest in artificial intelligence
+          </p>
+        </div>
+
         {/* Search and Filters */}
-        <div className="mb-8 space-y-6">
+        <div className="mb-8 space-y-4">
           <div className="max-w-2xl">
             <SearchBar />
           </div>
           
           <div>
-            <h3 className="text-sm font-medium text-slate-400 mb-3">Filter by Category</h3>
             <CategoryFilter />
           </div>
           
@@ -59,7 +68,7 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
         </div>
 
         {/* Article Feed */}
-        <Suspense fallback={<PageLoader />}>
+        <Suspense fallback={<ArticleFeedSkeleton count={9} />}>
           <ArticleFeed
             initialArticles={articles}
             userId={user?.id}
