@@ -11,9 +11,7 @@ import type { Article } from '@/types/database'
 export function deduplicateArticles(articles: Article[]): Article[] {
   const seenImages = new Set<string>()
   
-  console.log('🔍 Deduplication: Input articles:', articles.length)
-  
-  const deduplicated = articles.filter(article => {
+  return articles.filter(article => {
     // Treat null/undefined images as unique - keep them
     if (!article.image_url) {
       return true
@@ -21,7 +19,6 @@ export function deduplicateArticles(articles: Article[]): Article[] {
     
     // Check if we've seen this image URL before
     if (seenImages.has(article.image_url)) {
-      console.log('❌ Duplicate image found:', article.title.substring(0, 50))
       return false
     }
     
@@ -29,9 +26,4 @@ export function deduplicateArticles(articles: Article[]): Article[] {
     seenImages.add(article.image_url)
     return true
   })
-  
-  console.log('✅ Deduplication: Output articles:', deduplicated.length)
-  console.log('🗑️  Removed duplicates:', articles.length - deduplicated.length)
-  
-  return deduplicated
 }
