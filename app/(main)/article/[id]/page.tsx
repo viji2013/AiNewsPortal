@@ -69,7 +69,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <a
                 href={typedArticle.url}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener noreferrer nofollow"
                 className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Read Full Article
@@ -82,6 +82,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   />
                 </svg>
               </a>
+              <p className="text-xs text-slate-500 mt-2">
+                External link • Opens in new tab
+              </p>
             </div>
           )}
         </article>

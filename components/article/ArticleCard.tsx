@@ -44,18 +44,33 @@ export function ArticleCard({ article, isBookmarked, onBookmark, onShare }: Arti
       {/* InShorts-Style Image - Larger, more prominent */}
       <Link href={`/article/${article.id}`} className="block relative">
         <div className="relative w-full h-56 sm:h-64 overflow-hidden bg-slate-100 dark:bg-slate-800">
-          <Image
-            src={finalImageUrl}
-            alt={article.title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-            onError={() => setImageError(true)}
-            priority={false}
-            quality={85}
-          />
+          {!imageError && article.image_url ? (
+            <Image
+              key={`img-${article.id}`}
+              src={article.image_url}
+              alt={article.title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              onError={() => setImageError(true)}
+              priority={false}
+              quality={85}
+            />
+          ) : (
+            <Image
+              key={`fallback-${article.id}`}
+              src={FALLBACK_IMAGE}
+              alt={article.title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              priority={false}
+              quality={85}
+              unoptimized
+            />
+          )}
           {/* Category badge overlay on image */}
-          <div className="absolute top-4 left-4">
+          <div className="absolute top-4 left-4 z-10">
             <span className="px-3 py-1.5 bg-slate-900/90 backdrop-blur-sm text-white font-bold text-xs uppercase tracking-wide rounded-full">
               {article.category || 'AI'}
             </span>

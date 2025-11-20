@@ -128,6 +128,22 @@ export class ArticleIngestor {
   }
 
   /**
+   * Validate if a URL is accessible
+   */
+  async validateUrl(url: string): Promise<boolean> {
+    try {
+      const response = await fetch(url, {
+        method: 'HEAD',
+        signal: AbortSignal.timeout(5000), // 5 second timeout
+      })
+      return response.ok
+    } catch (error) {
+      console.warn(`URL validation failed for ${url}:`, error)
+      return false
+    }
+  }
+
+  /**
    * Insert article into database
    */
   async insertArticle(article: {
@@ -139,6 +155,13 @@ export class ArticleIngestor {
     image_url?: string
     published_at: Date
   }): Promise<number | null> {
+    // Validate URL before inserting
+    const isValidUrl = await this.validateUrl(article.url)
+    if (!isValidUrl) {
+      console.warn(`Skipping article with invalid URL: ${article.url}`)
+      return null
+    }
+
     const { data, error } = await this.supabase
       .from('news_articles')
       .insert({
