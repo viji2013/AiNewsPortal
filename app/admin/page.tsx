@@ -47,7 +47,8 @@ async function triggerIngestion() {
   'use server'
   
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/ingestion/run`, {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-news-portal-psi.vercel.app'
+    const response = await fetch(`${appUrl}/api/ingestion/run?manual=true`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${process.env.CRON_SECRET}`,
