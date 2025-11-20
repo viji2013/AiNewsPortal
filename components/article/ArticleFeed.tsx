@@ -30,6 +30,11 @@ export function ArticleFeed({
   const deduplicatedArticles = useMemo(() => deduplicateArticles(initialArticles), [initialArticles])
   
   const [articles, setArticles] = useState(deduplicatedArticles)
+  
+  // Update articles when initialArticles changes (e.g., when category filter changes)
+  useEffect(() => {
+    setArticles(deduplicatedArticles)
+  }, [deduplicatedArticles])
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(new Set())
   const [loading, setLoading] = useState(false)
   const [shareArticle, setShareArticle] = useState<Article | null>(null)

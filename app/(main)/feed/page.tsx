@@ -87,5 +87,5 @@ export const metadata = {
   description: 'Browse the latest AI news across LLMs, Computer Vision, Machine Learning, and more',
 }
 
-// Revalidate every 5 minutes
-export const revalidate = 300
+// Force dynamic rendering to ensure searchParams are always fresh
+export const dynamic = 'force-dynamic'

@@ -22,8 +22,11 @@ export function CategoryFilter() {
     // Reset to page 1 when category changes
     params.delete('page')
     
-    router.push(`/feed?${params.toString()}`)
-    router.refresh()
+    const queryString = params.toString()
+    const url = queryString ? `/feed?${queryString}` : '/feed'
+    
+    // Use replace to avoid adding to history, then refresh
+    router.push(url, { scroll: false })
   }
 
   return (
