@@ -65,14 +65,14 @@ export type CategoryPreferences = {
   categories: string[]
 }
 
-export type AICategory = 'llms' | 'cv' | 'ml' | 'agi' | 'robotics' | 'agents' | 'nlp'
+export type AICategory = 'llms' | 'cv' | 'ml' | 'agents' | 'nlp' | 'agi' | 'robotics'
 
-export const AI_CATEGORIES: { value: AICategory; label: string }[] = [
-  { value: 'llms', label: 'Large Language Models' },
+export const AI_CATEGORIES: { value: string; label: string }[] = [
+  { value: 'llms', label: 'LLMs' },
   { value: 'cv', label: 'Computer Vision' },
   { value: 'ml', label: 'Machine Learning' },
-  { value: 'agi', label: 'Artificial General Intelligence' },
-  { value: 'robotics', label: 'Robotics' },
   { value: 'agents', label: 'AI Agents' },
-  { value: 'nlp', label: 'Natural Language Processing' },
+  { value: 'nlp', label: 'NLP' },
+  { value: 'agi', label: 'AGI' },
+  { value: 'robotics', label: 'Robotics' },
 ]
