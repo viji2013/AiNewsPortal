@@ -8,6 +8,17 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if OpenAI API key is configured
+    if (!process.env.OPENAI_API_KEY) {
+      return NextResponse.json(
+        { 
+          error: 'OpenAI API key not configured',
+          message: 'Please set OPENAI_API_KEY environment variable'
+        },
+        { status: 500 }
+      )
+    }
+
     // Verify cron secret for security (allow bypass for testing)
     const authHeader = request.headers.get('authorization')
     const expectedAuth = `Bearer ${process.env.CRON_SECRET}`
@@ -28,9 +39,22 @@ export async function GET(request: NextRequest) {
       .select('*')
       .eq('is_active', true)
 
-    if (sourcesError || !sources || sources.length === 0) {
+    if (sourcesError) {
       return NextResponse.json(
-        { error: 'No active sources found', details: sourcesError },
+        { 
+          error: 'Database error fetching sources', 
+          details: sourcesError.message 
+        },
+        { status: 500 }
+      )
+    }
+
+    if (!sources || sources.length === 0) {
+      return NextResponse.json(
+        { 
+          error: 'No active sources found',
+          message: 'Please add RSS sources by running supabase/add-ai-news-sources.sql in your Supabase SQL Editor'
+        },
         { status: 400 }
       )
     }
