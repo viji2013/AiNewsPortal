@@ -8,14 +8,15 @@ import type { Database } from '@/types/database.types'
 type NewsArticle = Database['public']['Tables']['news_articles']['Row']
 
 interface ArticlePageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
+  const { id } = await params
   const supabase = await createClient()
-  const articleId = parseInt(params.id)
+  const articleId = parseInt(id)
 
   if (isNaN(articleId)) {
     notFound()
@@ -90,8 +91,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 }
 
 export async function generateMetadata({ params }: ArticlePageProps) {
+  const { id } = await params
   const supabase = await createClient()
-  const articleId = parseInt(params.id)
+  const articleId = parseInt(id)
 
   if (isNaN(articleId)) {
     return {
