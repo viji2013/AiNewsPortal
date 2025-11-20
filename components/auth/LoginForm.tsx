@@ -38,7 +38,8 @@ export function LoginForm() {
         setError(result.error)
       } else {
         if (isSignUp) {
-          setSuccess('Account created! Check your email to verify.')
+          const message = (result as any).message || 'Account created! Check your email to verify.'
+          setSuccess(message)
         } else {
           router.push('/feed')
           router.refresh()

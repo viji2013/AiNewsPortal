@@ -99,6 +99,12 @@ export async function signInWithEmail(email: string, password: string) {
   })
 
   if (error) {
+    // Provide more helpful error messages
+    if (error.message === 'Invalid login credentials') {
+      return { 
+        error: 'Invalid email or password. If you haven\'t signed up yet, please create an account first.' 
+      }
+    }
     return { error: error.message }
   }
 
@@ -118,6 +124,15 @@ export async function signUpWithEmail(email: string, password: string) {
 
   if (error) {
     return { error: error.message }
+  }
+
+  // Check if email confirmation is required
+  if (data.user && !data.session) {
+    return { 
+      success: true, 
+      data,
+      message: 'Account created! Please check your email to verify your account before signing in.'
+    }
   }
 
   return { success: true, data }
