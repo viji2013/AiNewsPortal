@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { ArticleCard } from './ArticleCard'
 import { AddToCollectionModal } from './AddToCollectionModal'
 import { ShareModal } from './ShareModal'
@@ -17,7 +18,6 @@ interface ArticleFeedProps {
   userId?: string
   currentPage: number
   categories?: string
-  searchQuery?: string
 }
 
 export function ArticleFeed({
@@ -25,8 +25,10 @@ export function ArticleFeed({
   userId,
   currentPage,
   categories,
-  searchQuery,
 }: ArticleFeedProps) {
+  // Read search query directly from URL params
+  const searchParams = useSearchParams()
+  const searchQuery = searchParams.get('q') || ''
   // Deduplicate articles by image URL
   const deduplicatedArticles = useMemo(() => deduplicateArticles(initialArticles), [initialArticles])
   

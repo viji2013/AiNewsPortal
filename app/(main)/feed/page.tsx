@@ -76,7 +76,6 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
             userId={user?.id}
             currentPage={page}
             categories={params.categories}
-            searchQuery={params.q}
           />
         </Suspense>
       </div>
