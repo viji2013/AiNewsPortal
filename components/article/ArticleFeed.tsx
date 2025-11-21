@@ -10,6 +10,7 @@ import { useToast } from '@/components/ui/Toast'
 import type { Article } from '@/types/database'
 import { toggleBookmark, isArticleSaved } from '@/app/actions/bookmarks'
 import { deduplicateArticles } from '@/lib/utils/deduplication'
+import { filterBySearch } from '@/lib/utils/articleFilters'
 
 interface ArticleFeedProps {
   initialArticles: Article[]
@@ -26,15 +27,29 @@ export function ArticleFeed({
   categories,
   searchQuery,
 }: ArticleFeedProps) {
-  // Deduplicate articles by image URL before setting state
+  // Deduplicate articles by image URL
   const deduplicatedArticles = useMemo(() => deduplicateArticles(initialArticles), [initialArticles])
   
-  const [articles, setArticles] = useState(deduplicatedArticles)
+  // Apply client-side search filter
+  const filteredArticles = useMemo(() => {
+    // If no search query, return all deduplicated articles
+    if (!searchQuery || searchQuery.trim() === '') {
+      return deduplicatedArticles
+    }
+    
+    // Apply search filter
+    return filterBySearch(deduplicatedArticles, searchQuery)
+  }, [deduplicatedArticles, searchQuery])
   
-  // Update articles when initialArticles changes (e.g., when category filter changes)
+  const [articles, setArticles] = useState(filteredArticles)
+  const [showGoogleFallback, setShowGoogleFallback] = useState(false)
+  
+  // Update articles when filters change
   useEffect(() => {
-    setArticles(deduplicatedArticles)
-  }, [deduplicatedArticles])
+    setArticles(filteredArticles)
+    // Show Google fallback only if search query exists and no results found
+    setShowGoogleFallback(filteredArticles.length === 0 && !!searchQuery && searchQuery.trim() !== '')
+  }, [filteredArticles, searchQuery])
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(new Set())
   const [loading, setLoading] = useState(false)
   const [shareArticle, setShareArticle] = useState<Article | null>(null)
@@ -106,6 +121,14 @@ export function ArticleFeed({
     window.location.href = `/feed?${params.toString()}`
   }
 
+  // Handle Google search fallback
+  const handleGoogleSearch = () => {
+    if (searchQuery) {
+      const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery + ' AI news')}`
+      window.open(searchUrl, '_blank', 'noopener,noreferrer')
+    }
+  }
+
   if (articles.length === 0) {
     return (
       <div className="py-20">
@@ -125,12 +148,37 @@ export function ArticleFeed({
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">No articles found</h2>
-          <p className="text-slate-600 dark:text-slate-400">
-            {searchQuery || category
-              ? 'Try adjusting your filters or search query to find more articles'
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">No local results found</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-6">
+            {searchQuery
+              ? `No articles match "${searchQuery}". Try searching the web for more results.`
+              : categories
+              ? 'Try adjusting your category filters to find more articles'
               : 'Check back soon for the latest AI news and updates'}
           </p>
+          
+          {/* Google Search Fallback */}
+          {showGoogleFallback && (
+            <div className="space-y-4">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
+                  💡 No local results found. Search the web for "{searchQuery}"?
+                </p>
+                <button
+                  onClick={handleGoogleSearch}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  Search on Google
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )

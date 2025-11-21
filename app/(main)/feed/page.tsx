@@ -19,7 +19,7 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
   const params = await searchParams
   const user = await getUser()
   const page = parseInt(params.page || '1')
-  const limit = 20
+  const limit = 100 // Fetch more for client-side filtering
   const offset = (page - 1) * limit
 
   // Get user profile for preferences
@@ -36,10 +36,9 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
     ? preferences.categories
     : undefined
 
-  // Fetch articles with filters
+  // Fetch ALL articles (or category-filtered) - search will be done client-side
   const articles = await getArticles({
     categories: categoriesFilter,
-    searchQuery: params.q,
     limit,
     offset,
   })
