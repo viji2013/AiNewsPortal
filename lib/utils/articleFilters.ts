@@ -18,7 +18,7 @@ export function filterByCategories(articles: Article[], categories: string[]): A
 
 /**
  * Filter articles by search query
- * Searches across title, summary, source fields (case-insensitive, partial matching)
+ * Searches across title, summary, source fields (case-insensitive, word boundary matching)
  * @param articles - Array of articles to filter
  * @param query - Search query string
  * @returns Filtered articles matching the search query
@@ -30,24 +30,34 @@ export function filterBySearch(articles: Article[], query: string): Article[] {
   
   const searchTerm = query.toLowerCase().trim()
   
+  // Create a regex for word boundary matching (more relevant results)
+  // \b ensures we match whole words, but still allows partial matches at word boundaries
+  const searchRegex = new RegExp(`\\b${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i')
+  
   return articles.filter(article => {
-    // Search in title
-    if (article.title?.toLowerCase().includes(searchTerm)) {
+    // Search in title (word boundary matching for better relevance)
+    if (searchRegex.test(article.title || '')) {
       return true
     }
     
     // Search in summary/description
-    if (article.summary?.toLowerCase().includes(searchTerm)) {
+    if (searchRegex.test(article.summary || '')) {
       return true
     }
     
     // Search in source
-    if (article.source?.toLowerCase().includes(searchTerm)) {
+    if (searchRegex.test(article.source || '')) {
       return true
     }
     
-    // Search in category
-    if (article.category?.toLowerCase().includes(searchTerm)) {
+    // Also do a simple includes check as fallback for partial matches
+    const lowerTitle = article.title?.toLowerCase() || ''
+    const lowerSummary = article.summary?.toLowerCase() || ''
+    const lowerSource = article.source?.toLowerCase() || ''
+    
+    if (lowerTitle.includes(searchTerm) || 
+        lowerSummary.includes(searchTerm) || 
+        lowerSource.includes(searchTerm)) {
       return true
     }
     
