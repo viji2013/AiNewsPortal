@@ -22,7 +22,10 @@ export function SearchBar() {
     // Reset to page 1 when search changes
     params.delete('page')
     
-    router.push(`/feed?${params.toString()}`, { scroll: false })
+    const queryString = params.toString()
+    const url = queryString ? `/feed?${queryString}` : '/feed'
+    
+    router.push(url)
   }, [debouncedQuery, router, searchParams])
 
   const handleClear = () => {

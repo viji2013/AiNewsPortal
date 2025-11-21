@@ -32,13 +32,18 @@ export function ArticleFeed({
   
   // Apply client-side search filter
   const filteredArticles = useMemo(() => {
+    console.log('ArticleFeed - Search Query:', searchQuery)
+    console.log('ArticleFeed - Total articles before filter:', deduplicatedArticles.length)
+    
     // If no search query, return all deduplicated articles
     if (!searchQuery || searchQuery.trim() === '') {
       return deduplicatedArticles
     }
     
     // Apply search filter
-    return filterBySearch(deduplicatedArticles, searchQuery)
+    const filtered = filterBySearch(deduplicatedArticles, searchQuery)
+    console.log('ArticleFeed - Filtered articles:', filtered.length)
+    return filtered
   }, [deduplicatedArticles, searchQuery])
   
   const [articles, setArticles] = useState(filteredArticles)
