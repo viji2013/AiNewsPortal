@@ -15,7 +15,7 @@ interface ArticleFeedProps {
   initialArticles: Article[]
   userId?: string
   currentPage: number
-  category?: string
+  categories?: string
   searchQuery?: string
 }
 
@@ -23,7 +23,7 @@ export function ArticleFeed({
   initialArticles,
   userId,
   currentPage,
-  category,
+  categories,
   searchQuery,
 }: ArticleFeedProps) {
   // Deduplicate articles by image URL before setting state
@@ -100,7 +100,7 @@ export function ArticleFeed({
     const nextPage = currentPage + 1
     const params = new URLSearchParams()
     params.set('page', nextPage.toString())
-    if (category) params.set('category', category)
+    if (categories) params.set('categories', categories)
     if (searchQuery) params.set('q', searchQuery)
     
     window.location.href = `/feed?${params.toString()}`

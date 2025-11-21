@@ -9,7 +9,7 @@ import { Suspense } from 'react'
 
 interface FeedPageProps {
   searchParams: Promise<{
-    category?: string
+    categories?: string
     q?: string
     page?: string
   }>
@@ -26,15 +26,18 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
   const profile = user ? await getProfile(user.id) : null
   const preferences = profile?.preferences as { categories?: string[] } | null
   
+  // Parse categories from URL
+  const urlCategories = params.categories ? params.categories.split(',') : []
+  
   // Apply category filter: URL param takes precedence, then preferences, then show all
-  const categoryFilter = params.category
-  const categoriesFilter = !categoryFilter && preferences?.categories && preferences.categories.length > 0
+  const categoriesFilter = urlCategories.length > 0
+    ? urlCategories
+    : preferences?.categories && preferences.categories.length > 0
     ? preferences.categories
     : undefined
 
   // Fetch articles with filters
   const articles = await getArticles({
-    category: categoryFilter,
     categories: categoriesFilter,
     searchQuery: params.q,
     limit,
@@ -73,7 +76,7 @@ export default async function FeedPage({ searchParams }: FeedPageProps) {
             initialArticles={articles}
             userId={user?.id}
             currentPage={page}
-            category={params.category}
+            categories={params.categories}
             searchQuery={params.q}
           />
         </Suspense>
